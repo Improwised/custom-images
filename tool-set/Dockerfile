@@ -1,7 +1,7 @@
 ARG CT_VERSION
 ARG CR_VERSION
-ARG YQ_VERSIO
-ARG GIT_CHGLOG_VERSION
+ARG YQ_VERSION=4.9.6
+ARG GIT_CHGLOG_VERSION=0.14.2
 
 FROM quay.io/helmpack/chart-testing:v${CT_VERSION} as chart-testing
 FROM quay.io/helmpack/chart-releaser:v${CR_VERSION} as chart-releaser
@@ -14,7 +14,7 @@ ARG GHR_VERSION
 ARG JQ_VERSION
 ARG SEMVERTOOL_VERSION
 
-ENV GHR_VERSION="v${GHR_VERSION}"
+ENV GHR_VERSION="${GHR_VERSION}"
 ENV SEMVERTOOL_VERSION="${SEMVERTOOL_VERSION}"
 ENV JQ_VERSION="${JQ_VERSION}"
 
@@ -34,7 +34,7 @@ RUN \
     cd /tmp; \
     wget -nv -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/${GHR_VERSION}/ghr_${GHR_VERSION}_linux_amd64.tar.gz; \
     wget -nv -O /usr/local/tools/semvertool https://raw.githubusercontent.com/fsaintjacques/semver-tool/${SEMVERTOOL_VERSION}/src/semver; \
-    wget -nv -O /usr/local/tools/jq https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64; \
+    wget -nv -O /usr/local/tools/jq https://github.com/stedolan/jq/releases/download/${JQ_VERSION}/jq-linux64; \
     tar xvzf ghr.tar.gz ghr_${GHR_VERSION}_linux_amd64/ghr && mv ghr_${GHR_VERSION}_linux_amd64/ghr /usr/local/tools/ghr; \
     chmod a+x /usr/local/tools/*; \
     rm -rf /tmp/*; \
@@ -47,5 +47,3 @@ RUN \
     yq --version; \
     helm version; \
     kubectl version
-
-ENTRYPOINT "/bin/bash"
