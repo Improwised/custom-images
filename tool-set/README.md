@@ -1,8 +1,4 @@
-# custom-images
-
-Custom Docker images for improwised tech infra
-
-## 1. tool-set
+## tool-set
 
 `ct` for chart testing
 `cr` for chart releasing
@@ -10,5 +6,3 @@ Custom Docker images for improwised tech infra
 `yq` for yaml handling
 `jq` for json handling
 `semvertool` for bumping semver version
-
-`docker pull docker.io/improwised/tool-set:latest`
