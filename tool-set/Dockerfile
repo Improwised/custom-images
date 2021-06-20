@@ -38,7 +38,6 @@ RUN \
     tar xvzf ghr.tar.gz ghr_${GHR_VERSION}_linux_amd64/ghr && mv ghr_${GHR_VERSION}_linux_amd64/ghr /usr/local/tools/ghr; \
     chmod a+x /usr/local/tools/*; \
     rm -rf /tmp/*; \
-    # export PATH=$PATH:/usr/local/tools/; \
     jq --version; \
     ghr --version; \
     ct version; \
@@ -46,4 +45,4 @@ RUN \
     git-chglog --version; \
     yq --version; \
     helm version; \
-    kubectl version
+    kubectl version --client
