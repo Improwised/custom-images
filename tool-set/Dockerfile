@@ -43,6 +43,7 @@ RUN \
     ct version; \
     cr version; \
     git-chglog --version; \
+    semvertool --version; \
     yq --version; \
     helm version; \
     kubectl version --client
