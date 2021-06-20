@@ -3,8 +3,8 @@ ARG CR_VERSION
 ARG YQ_VERSION=4.9.6
 ARG GIT_CHGLOG_VERSION=0.14.2
 
-FROM quay.io/helmpack/chart-testing:v${CT_VERSION} as chart-testing
-FROM quay.io/helmpack/chart-releaser:v${CR_VERSION} as chart-releaser
+FROM quay.io/helmpack/chart-testing:${CT_VERSION} as chart-testing
+FROM quay.io/helmpack/chart-releaser:${CR_VERSION} as chart-releaser
 FROM docker.io/mikefarah/yq:${YQ_VERSION} as yaml-yq
 FROM quay.io/git-chglog/git-chglog:${GIT_CHGLOG_VERSION} as git-chglog
 
