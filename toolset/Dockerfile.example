@@ -8,7 +8,7 @@ FROM quay.io/helmpack/chart-releaser:${CR_VERSION} as chart-releaser
 FROM docker.io/mikefarah/yq:${YQ_VERSION} as yaml-yq
 FROM quay.io/git-chglog/git-chglog:${GIT_CHGLOG_VERSION} as git-chglog
 
-FROM alpine
+FROM alpine as tools
 
 ARG GHR_VERSION=v0.14.0
 ARG JQ_VERSION=jq-1.6
@@ -29,8 +29,7 @@ ENV PATH="/usr/local/tools/:${PATH}"
 
 RUN \
     set -ex; \
-    printenv; \
-    apk add --no-cache git bash; \
+    apk add --no-cache bash;\
     mkdir -p /usr/local/tools/; \
     cd /tmp; \
     wget -nv -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/${GHR_VERSION}/ghr_${GHR_VERSION}_linux_amd64.tar.gz; \
@@ -44,6 +43,14 @@ RUN \
     ct version; \
     cr version; \
     git-chglog --version; \
+    semvertool --version; \
     yq --version; \
     helm version; \
-    kubectl version || true;
+    kubectl version --client
+
+## Final image
+FROM alpine
+
+ENV PATH="/usr/local/tools/:${PATH}"
+RUN apk add --no-cache git bash
+COPY --from=tools "/usr/local/tools/*" "/usr/local/tools/"
