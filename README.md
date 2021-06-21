@@ -8,6 +8,10 @@ Custom Docker images for improwised tech infra
 
 `cr` for chart releasing
 
+`helm` dep for ct
+
+`kubectl` dep for ct
+
 `ghr` for github releasing
 
 `yq` for yaml handling
@@ -17,5 +21,3 @@ Custom Docker images for improwised tech infra
 `git-chglog` for generating git changelog
 
 `semvertool` for bumping semver version
-
-`docker pull docker.io/improwised/toolset:latest`
