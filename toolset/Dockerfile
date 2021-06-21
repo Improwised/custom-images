@@ -50,4 +50,5 @@ RUN \
 
 FROM alpine
 ENV PATH="/usr/local/tools/:${PATH}"
+RUN apk add --no-cache git bash
 COPY --from=tools "/usr/local/tools/*" "/usr/local/tools/"
