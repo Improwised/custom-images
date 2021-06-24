@@ -50,4 +50,12 @@ RUN \
 
 FROM bitnami/git
 ENV PATH="/usr/local/tools/:${PATH}"
+RUN \
+    set -ex; \
+    apt-get update; \
+    apt-get install ssh -y; \
+    apt-get clean autoclean; \
+    apt-get autoremove --yes; \
+    rm -rf /var/lib/{apt,dpkg,cache,log}/ || true
+
 COPY --from=tools "/usr/local/tools/*" "/usr/local/tools/"
