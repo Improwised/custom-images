@@ -8,7 +8,7 @@ FROM quay.io/helmpack/chart-releaser:${CR_VERSION} as chart-releaser
 FROM docker.io/mikefarah/yq:${YQ_VERSION} as yaml-yq
 FROM quay.io/git-chglog/git-chglog:${GIT_CHGLOG_VERSION} as git-chglog
 
-FROM alpine as tools
+FROM alpine:latest as tools
 
 ARG GHR_VERSION
 ARG JQ_VERSION
@@ -48,7 +48,7 @@ RUN \
     helm version; \
     kubectl version --client
 
-FROM alpine
+FROM alpine:latest
 ENV PATH="/usr/local/tools/:${PATH}"
 RUN apk add --no-cache git bash
 COPY --from=tools "/usr/local/tools/*" "/usr/local/tools/"
