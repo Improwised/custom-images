@@ -1,7 +1,7 @@
 ARG CT_VERSION
 ARG CR_VERSION
-ARG YQ_VERSION=4.9.6
-ARG GIT_CHGLOG_VERSION=0.14.2
+ARG YQ_VERSION
+ARG GIT_CHGLOG_VERSION
 
 FROM quay.io/helmpack/chart-testing:${CT_VERSION} as chart-testing
 FROM quay.io/helmpack/chart-releaser:${CR_VERSION} as chart-releaser
@@ -25,19 +25,31 @@ COPY --from=chart-releaser "/usr/local/bin/cr" "/usr/local/tools/cr"
 COPY --from=yaml-yq "/usr/bin/yq" "/usr/local/tools/yq"
 COPY --from=git-chglog "/usr/local/bin/git-chglog" "/usr/local/tools/git-chglog"
 
-ENV PATH="/usr/local/tools/:${PATH}"
-
 RUN \
     set -ex; \
-    apk add --no-cache bash; \
     mkdir -p /usr/local/tools/; \
     cd /tmp; \
     wget -nv -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/${GHR_VERSION}/ghr_${GHR_VERSION}_linux_amd64.tar.gz; \
     wget -nv -O /usr/local/tools/semvertool https://raw.githubusercontent.com/fsaintjacques/semver-tool/${SEMVERTOOL_VERSION}/src/semver; \
     wget -nv -O /usr/local/tools/jq https://github.com/stedolan/jq/releases/download/${JQ_VERSION}/jq-linux64; \
     tar xvzf ghr.tar.gz ghr_${GHR_VERSION}_linux_amd64/ghr && mv ghr_${GHR_VERSION}_linux_amd64/ghr /usr/local/tools/ghr; \
-    chmod a+x /usr/local/tools/*; \
-    rm -rf /tmp/*; \
+    cd ~; \
+    chmod a+x /usr/local/tools/*
+
+FROM python:slim-buster
+ENV PATH="${PATH}:/usr/local/tools/"
+COPY --from=tools "/usr/local/tools/*" "/usr/local/bin/"
+RUN \
+    set -ex; \
+    apt update; apt install git -y; \
+    pip install --no-cache-dir yamllint==1.26.1 yamale==3.0.6; \
+    pip cache purge || true; \
+    apt-get clean || true; \
+    apt-get autoremove --yes || true; \
+    rm -rf /var/lib/{apt,dpkg,cache,log}/ || true; \
+    yamllint -v; \
+    yamale -h; \
+    git --version; \
     jq --version; \
     ghr --version; \
     ct version; \
@@ -47,7 +59,3 @@ RUN \
     yq --version; \
     helm version; \
     kubectl version --client
-
-FROM bitnami/git
-ENV PATH="${PATH}:/usr/local/tools/"
-COPY --from=tools "/usr/local/tools/*" "/usr/local/tools/"
