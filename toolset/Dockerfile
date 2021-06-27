@@ -1,14 +1,12 @@
-ARG CT_VERSION
 ARG CR_VERSION
 ARG YQ_VERSION=4.9.6
 ARG GIT_CHGLOG_VERSION=0.14.2
 
-FROM quay.io/helmpack/chart-testing:${CT_VERSION} as chart-testing
 FROM quay.io/helmpack/chart-releaser:${CR_VERSION} as chart-releaser
 FROM docker.io/mikefarah/yq:${YQ_VERSION} as yaml-yq
 FROM quay.io/git-chglog/git-chglog:${GIT_CHGLOG_VERSION} as git-chglog
 
-FROM alpine as tools
+FROM quay.io/helmpack/chart-testing as tools
 
 ARG GHR_VERSION
 ARG JQ_VERSION
@@ -18,9 +16,6 @@ ENV GHR_VERSION="${GHR_VERSION}"
 ENV SEMVERTOOL_VERSION="${SEMVERTOOL_VERSION}"
 ENV JQ_VERSION="${JQ_VERSION}"
 
-COPY --from=chart-testing "/usr/local/bin/ct" "/usr/local/tools/ct"
-COPY --from=chart-testing "/usr/local/bin/helm" "/usr/local/tools/helm"
-COPY --from=chart-testing "/usr/local/bin/kubectl" "/usr/local/tools/kubectl"
 COPY --from=chart-releaser "/usr/local/bin/cr" "/usr/local/tools/cr"
 COPY --from=yaml-yq "/usr/bin/yq" "/usr/local/tools/yq"
 COPY --from=git-chglog "/usr/local/bin/git-chglog" "/usr/local/tools/git-chglog"
@@ -38,6 +33,10 @@ RUN \
     tar xvzf ghr.tar.gz ghr_${GHR_VERSION}_linux_amd64/ghr && mv ghr_${GHR_VERSION}_linux_amd64/ghr /usr/local/tools/ghr; \
     chmod a+x /usr/local/tools/*; \
     rm -rf /tmp/*; \
+    ls /usr/local/tools; \
+    yamale -h; \
+    yamllint -v; \
+    git --version; \
     jq --version; \
     ghr --version; \
     ct version; \
@@ -48,6 +47,6 @@ RUN \
     helm version; \
     kubectl version --client
 
-FROM bitnami/git
-ENV PATH="${PATH}:/usr/local/tools/"
-COPY --from=tools "/usr/local/tools/*" "/usr/local/tools/"
+FROM quay.io/helmpack/chart-testing
+RUN apk add --no-cache bash
+COPY --from=tools "/usr/local/tools/*" "/usr/local/bin/"

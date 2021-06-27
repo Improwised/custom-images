@@ -1,5 +1,5 @@
-ARG CT_VERSION=v3.3.1
-ARG CR_VERSION=v1.2.1
+ARG CT_VERSION
+ARG CR_VERSION
 ARG YQ_VERSION=4.9.6
 ARG GIT_CHGLOG_VERSION=0.14.2
 
@@ -10,9 +10,9 @@ FROM quay.io/git-chglog/git-chglog:${GIT_CHGLOG_VERSION} as git-chglog
 
 FROM alpine as tools
 
-ARG GHR_VERSION=v0.14.0
-ARG JQ_VERSION=jq-1.6
-ARG SEMVERTOOL_VERSION=20028cb53f340a300b460b423e43f0eac13bcd9a
+ARG GHR_VERSION
+ARG JQ_VERSION
+ARG SEMVERTOOL_VERSION
 
 ENV GHR_VERSION="${GHR_VERSION}"
 ENV SEMVERTOOL_VERSION="${SEMVERTOOL_VERSION}"
@@ -49,5 +49,5 @@ RUN \
     kubectl version --client
 
 FROM bitnami/git
-ENV PATH="/usr/local/tools/:${PATH}"
+ENV PATH="${PATH}:/usr/local/tools/"
 COPY --from=tools "/usr/local/tools/*" "/usr/local/tools/"
