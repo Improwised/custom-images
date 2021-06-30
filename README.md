@@ -7,7 +7,7 @@ Public Custom Docker images for improwised tech infra and
 1. Create directory named your custom image name.
 2. Create README.md in that dir for it explaining why and which tools in it.
 3. Add that README.md's content to root README.md with headr-2(`##`) title as 
-custom image name and it's content as expand list e.g. take a look at tool-set
+custom image name and it's content as expand list e.g. take a look at [tool-set](#1-tool-set)
 
 ## 1. tool-set
 <details>
